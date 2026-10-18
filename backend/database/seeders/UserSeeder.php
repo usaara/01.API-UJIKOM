@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
+
 class UserSeeder extends Seeder
 {
     public function run(): void
@@ -15,7 +16,7 @@ class UserSeeder extends Seeder
                 'name' => 'Bagus Karim',
                 'email' => 'admin@gmail.com',
                 'password' => Hash::make('password123'),
-                'role' => 'admin', // Diubah jadi huruf kecil 'admin'
+                'role' => 'admin',
                 'no_hp' => '081234567890',
                 'alamat' => 'Bandung, West Java',
             ],
@@ -23,7 +24,7 @@ class UserSeeder extends Seeder
                 'name' => 'Arif Muhammad',
                 'email' => 'petugas@gmail.com',
                 'password' => Hash::make('password123'),
-                'role' => 'petugas', // Diubah jadi huruf kecil 'petugas'
+                'role' => 'petugas',
                 'no_hp' => '082345678901',
                 'alamat' => 'Baleendah, Bandung',
             ],

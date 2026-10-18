@@ -20,10 +20,10 @@ class AuthController extends Controller
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
-        
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
+
             $user = Auth::user();
 
             // Redirect berdasarkan Role sesuai matriks Anda

@@ -1,0 +1,84 @@
+@extends('layouts.app')
+
+@section('title', 'Tambah Peminjaman - Panel Admin')
+@section('header-title', 'Tambah Transaksi Peminjaman')
+
+@section('content')
+<div class="max-w-3xl bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+    <form action="{{ route('admin.peminjaman.store') }}" method="POST">
+        @csrf
+
+        <div class="mb-5">
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Pilih Peminjam (User)</label>
+            <select name="user_id" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="" disabled selected>-- Pilih User --</option>
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                @endforeach
+            </select>
+            @error('user_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Tanggal Pinjam</label>
+                <input type="date" name="tgl_pinjam" value="{{ old('tgl_pinjam', date('Y-m-d')) }}" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Rencana Tanggal Kembali</label>
+                <input type="date" name="tgl_kembali_plan" value="{{ old('tgl_kembali_plan') }}" required
+                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+        </div>
+
+        <div class="mb-4">
+            <label class="block text-gray-700 text-sm font-semibold mb-2">Daftar Alat yang Dipinjam</label>
+            <div id="alat-container" class="space-y-2">
+                <div class="alat-row flex items-center gap-2">
+                    <select name="alat_id[]" required class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none">
+                        <option value="" disabled selected>-- Pilih Alat --</option>
+                        @foreach($alats as $alat)
+                            <option value="{{ $alat->id }}">{{ $alat->nama_alat }} (Stok: {{ $alat->stok }})</option>
+                        @endforeach
+                    </select>
+                    <input type="number" name="jumlah[]" value="1" min="1" placeholder="Jumlah" required
+                        class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button type="button" onclick="removeRow(this)"
+                        class="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm font-semibold transition">-</button>
+                </div>
+            </div>
+            <button type="button" onclick="addRow()"
+                class="mt-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">+ Tambah Alat</button>
+        </div>
+
+        <div class="flex justify-end space-x-2">
+            <a href="{{ route('admin.peminjaman.index') }}"
+                class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded-lg text-sm font-semibold transition">Batal</a>
+            <button type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">Simpan Peminjaman</button>
+        </div>
+
+    </form>
+</div>
+
+<script>
+    function addRow() {
+        const container = document.getElementById('alat-container');
+        const firstRow = container.querySelector('.alat-row');
+        const newRow = firstRow.cloneNode(true);
+        newRow.querySelector('select').value = '';
+        newRow.querySelector('input').value = '1';
+        container.appendChild(newRow);
+    }
+
+    function removeRow(button) {
+        const rows = document.querySelectorAll('.alat-row');
+        if (rows.length > 1) {
+            button.closest('.alat-row').remove();
+        } else {
+            alert('Minimal harus ada 1 alat yang dipilih.');
+        }
+    }
+</script>
+@endsection

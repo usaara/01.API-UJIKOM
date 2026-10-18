@@ -9,8 +9,9 @@ class Pengembalian extends Model
 {
     protected $table = 'pengembalian';
 
-    protected $fillable =[
-        'peminjaman_id', 'tgl_kembali', 'kondisi_kembali', 'denda', 'petugas_id'
+    protected $fillable = [
+        'peminjaman_id', 'tgl_kembali', 'kondisi_kembali', 'denda',
+        'petugas_id'
     ];
 
     protected function casts(): array {
@@ -20,7 +21,7 @@ class Pengembalian extends Model
         ];
     }
 
-    public function peminnjaman(): BelonsTo {
+    public function peminjaman(): BelongsTo {
         return $this->belongsTo(Peminjaman::class);
     }
 

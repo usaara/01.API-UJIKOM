@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
@@ -16,13 +13,14 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->enum('role', ['admin','petugas','peminjam'])->default('peminjam');
+            $table->enum('role', ['admin', 'petugas', 'peminjam'])->default('peminjam');
             $table->string('no_hp')->nullable();
             $table->text('alamat')->nullable();
-            $table->text('foto_profile')->nullable();
+            $table->string('foto_profile')->nullable();
             $table->timestamps();
         });
     }
+
     public function down(): void
     {
         Schema::dropIfExists('users');

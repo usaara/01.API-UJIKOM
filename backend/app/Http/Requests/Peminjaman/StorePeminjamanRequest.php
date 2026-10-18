@@ -1,39 +1,34 @@
 <?php
 
-namespace App\Http\Requests\Peminjaman; 
-use Illuminate\Foundation\Http\FormRequest; 
-use Illuminate\Validation\Rule;  
-class StorePeminjamanRequest extends FormRequest 
-{     
-    public function authorize(): bool     
-    {         
-        return true;     
-    }     
-    public function rules(): array     
-    {         
-        return [             
-            'tgl_kembali_plan' => ['required', 'date', 'date_format:Y-m-d', 'after_or_equal:today'],             
-            'items' => ['required', 'array', 'min:1'],             
-            'items.*.alat_id' => ['required', 'integer', Rule::exists('alat', 'id')],             
-            'items.*.jumlah' => ['required', 'integer', 'min:1'],         
-        ];     
-    }     
-    public function messages(): array     
-    {         
-        return [             
-            'tgl_kembali_plan.required' => 'Tanggal rencana pengembalian wajib diisi.',             
-            'tgl_kembali_plan.date_format' => 'Format tanggal harus Tahun-Bulan-Tanggal (YYYY-MM-DD).',             
-            'tgl_kembali_plan.after_or_equal' => 'Tanggal rencana kembali tidak boleh di masa lalu.',             
-            'items.required' => 'Anda harus memilih minimal satu alat untuk dipinjam.',             
-            'items.array' => 'Format data item yang dikirim harus berupa daftar/list.',             
-            'items.min' => 'Anda harus memilih minimal satu alat untuk dipinjam.',         
-        ];     
-    }     
-    public function attributes(): array     
+namespace App\Http\Requests\Pengembalian;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+
+class StorePengembalianRequest extends FormRequest
+{
+    public function authorize(): bool
     {
-        return [             
-            'items.*.alat_id' => 'Alat',             
-            'items.*.jumlah' => 'Jumlah barang',         
-        ];     
-    } 
-}  
+        return true;
+    }
+
+    public function rules(): array
+    {
+        return [
+            'peminjaman_id' => ['required', 'integer',
+                Rule::exists('peminjaman', 'id')
+            ],
+            'kondisi_kembali' => ['required', 'string', 'max:255'],
+            'denda' => ['nullable', 'integer', 'min:0'],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'peminjaman_id' => 'ID Peminjaman',
+            'kondisi_kembali' => 'Kondisi barang kembali',
+            'denda' => 'Nilai denda',
+        ];
+    }
+}

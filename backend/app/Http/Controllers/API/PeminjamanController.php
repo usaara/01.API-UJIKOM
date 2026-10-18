@@ -20,7 +20,7 @@ class PeminjamanController extends Controller
 
         $query = Peminjaman::with([
             'user',
-            'detailPinjam.alat',
+            'detailPinjams.alat',
             'pengembalian'
         ]);
 
@@ -67,7 +67,7 @@ class PeminjamanController extends Controller
 
                 return $peminjaman->load([
                     'user',
-                    'detailPinjam.alat'
+                    'detailPinjams.alat'
                 ]);
             });
 
@@ -87,10 +87,7 @@ class PeminjamanController extends Controller
     {
         $user = auth()->user();
 
-        if (
-            $user->role === 'peminjam' &&
-            $peminjaman->user_id !== $user->id
-        ) {
+        if ($user->role === 'peminjam' && $peminjaman->user_id !== $user->id) {
             return response()->json([
                 'message' => 'Akses ditolak.'
             ], 403);
@@ -101,7 +98,7 @@ class PeminjamanController extends Controller
             'data' => new PeminjamanResource(
                 $peminjaman->load([
                     'user',
-                    'detailPinjam.alat',
+                    'detailPinjams.alat',
                     'pengembalian'
                 ])
             )
@@ -111,14 +108,10 @@ class PeminjamanController extends Controller
     public function update(
         StorePeminjamanRequest $request,
         Peminjaman $peminjaman
-    ): JsonResponse
-    {
+    ): JsonResponse {
         $user = auth()->user();
 
-        if (
-            $user->role === 'peminjam' &&
-            $peminjaman->user_id !== $user->id
-        ) {
+        if ($user->role === 'peminjam' && $peminjaman->user_id !== $user->id) {
             return response()->json([
                 'message' => 'Akses ditolak.'
             ], 403);
@@ -136,7 +129,7 @@ class PeminjamanController extends Controller
                     'tgl_kembali_plan' => $request->tgl_kembali_plan,
                 ]);
 
-                $peminjaman->detailPinjam()->delete();
+                $peminjaman->detailPinjams()->delete();
 
                 foreach ($request->items as $item) {
                     $alat = Alat::lockForUpdate()->findOrFail($item['alat_id']);
@@ -160,7 +153,7 @@ class PeminjamanController extends Controller
                 'data' => new PeminjamanResource(
                     $peminjaman->load([
                         'user',
-                        'detailPinjam.alat'
+                        'detailPinjams.alat'
                     ])
                 )
             ]);
@@ -176,10 +169,7 @@ class PeminjamanController extends Controller
     {
         $user = auth()->user();
 
-        if (
-            $user->role === 'peminjam' &&
-            $peminjaman->user_id !== $user->id
-        ) {
+        if ($user->role === 'peminjam' && $peminjaman->user_id !== $user->id) {
             return response()->json([
                 'message' => 'Akses ditolak.'
             ], 403);
@@ -192,7 +182,7 @@ class PeminjamanController extends Controller
         }
 
         DB::transaction(function () use ($peminjaman) {
-            $peminjaman->detailPinjam()->delete();
+            $peminjaman->detailPinjams()->delete();
             $peminjaman->delete();
         });
 
@@ -205,7 +195,7 @@ class PeminjamanController extends Controller
     {
         if ($peminjaman->status !== 'diajukan') {
             return response()->json([
-                'message' => "Persutujuan gagal. Status saat ini: {$peminjaman->status}."
+                'message' => "Persetujuan gagal. Status saat ini: {$peminjaman->status}."
             ], 400);
         }
 
@@ -215,10 +205,8 @@ class PeminjamanController extends Controller
                     'status' => 'dipinjam'
                 ]);
 
-                foreach ($peminjaman->detailPinjam as $detail) {
-                    $alat = Alat::lockForUpdate()->findOrFail(
-                        $detail->alat_id
-                    );
+                foreach ($peminjaman->detailPinjams as $detail) {
+                    $alat = Alat::lockForUpdate()->findOrFail($detail->alat_id);
 
                     if ($alat->stok < $detail->jumlah) {
                         throw new Exception(
@@ -235,7 +223,7 @@ class PeminjamanController extends Controller
                 'data' => new PeminjamanResource(
                     $peminjaman->load([
                         'user',
-                        'detailPinjam.alat'
+                        'detailPinjams.alat'
                     ])
                 )
             ]);
@@ -250,7 +238,7 @@ class PeminjamanController extends Controller
     public function riwayat(): JsonResponse
     {
         $riwayat = Peminjaman::with([
-            'detailPinjam.alat',
+            'detailPinjams.alat',
             'pengembalian'
         ])
             ->where('user_id', auth()->id())

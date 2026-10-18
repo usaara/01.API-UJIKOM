@@ -1,40 +1,25 @@
-<?php  
-namespace App\Http\Requests\Alat; 
-use Illuminate\Foundation\Http\FormRequest; 
-use Illuminate\Validation\Rule;  
+<?php
 
+namespace App\Http\Resources;
 
-class StoreAlatRequest extends FormRequest 
-{     
-    public function authorize(): bool     
-    {         
-        return true;     
-    }      
-    
-    public function rules(): array     
-    {         
+use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\JsonResource;
+
+class AlatResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
         return [
-            'kategori_id' => ['required','integer', Rule::exists('kategori', 'id')             
-            ],             
-            'nama_alat' => ['required', 'string', 'max:255'],             
-            'stok' => ['required', 'integer', 'min:0'],             
-            'status_kondisi' => ['required', 'string', 'max:255'],             
-            'deskripsi' => ['nullable', 'string'],             
-            'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 
-'max:2048'],         
-        ];     
-    }  
+            'id' => $this->id,
+            'nama_alat' => $this->nama_alat,
+            'stok' => $this->stok,
+            'status_kondisi' => $this->status_kondisi,
+            'deskripsi' => $this->deskripsi,
+            'gambar' => $this->gambar ? url('storage/' . $this->gambar) : null,
 
-    public function messages(): array     
-    {         
-        return [             
-            'kategori_id.exists' => 'Kategori yang dipilih tidak valid atau tidak terdaftar.',             
-            'stok.min' => 'Stok tidak boleh kurang dari 0.',             
-            'gambar.max' => 'Ukuran gambar maksimal adalah 2 MB.',             
-            'gambar.image' => 'File yang diunggah harus berupa gambar.',         
-        ];     
+            // Eager load relasi kategori jika tersedia
+            'kategori' => new KategoriResource($this->whenLoaded('kategori')),
+            'created_at' => $this->created_at->format('Y-m-d H:i:s'),
+        ];
     }
-} 
-
-
-
+}

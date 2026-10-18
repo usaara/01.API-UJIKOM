@@ -11,19 +11,34 @@ class Alat extends Model
     protected $table = 'alat';
 
     protected $fillable = [
-        'kategori_id', 'nama_alat', 'stok', 'status_kondisi', 'deskripsi', 'gambar'
+        'kategori_id',
+        'nama_alat',
+        'stok',
+        'status_kondisi',
+        'deskripsi',
+        'gambar'
     ];
-    protected function casts(): array {
+
+    protected function casts(): array
+    {
         return [
-            'stok' => "integer",
+            'stok' => 'integer',
         ];
     }
 
-    public function kategori():BelongsTo {
-        return $this->BelongsTo(kategori::class);
+    public function kategori(): BelongsTo
+    {
+        return $this->belongsTo(Kategori::class);
     }
 
-    public function detailPinjam(): HasMany {
+    public function detailPinjam(): HasMany
+    {
         return $this->hasMany(DetailPinjam::class);
+    }
+
+    // Scope untuk mengambil alat yang masih tersedia
+    public function scopeTersedia($query)
+    {
+        return $query->where('stok', '>', 0);
     }
 }

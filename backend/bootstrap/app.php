@@ -3,6 +3,11 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\IsPetugas;
+use App\Http\Middleware\IsPeminjam;
+use App\Http\Middleware\CheckRole;
+
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -11,9 +16,12 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
+    ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'role.admin' => \App\Http\Middleware\IsAdmin::class,
+            'role' => CheckRole::class,
+            'role.admin' => IsAdmin::class,
+            'role.petugas' => IsPetugas::class,
+            'role.peminjam' => IsPeminjam::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

@@ -8,17 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class IsPetugas
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  Closure(Request): (Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->role === 'petugas') { 
-            return $next($request); 
-        } 
-
-        return response()->json(['message' => 'Akses ditolak. Anda bukan Petugas.'], 403); 
+        if ($request->user() && $request->user()->role === 'petugas') {
+            return $next($request);
+        }
+            return response()->json(['message' => 'Akses ditolak. Anda bukan Petugas. '], 403);
+        
     }
 }

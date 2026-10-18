@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void {
         Schema::create('peminjaman', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users')->cascadeOnDelate();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
             $table->date('tgl_pinjam');
             $table->date('tgl_kembali_plan');
-            $table->enum('status', ['diajukan', 'dikembalikan', 'telat'])->default('diajukan');
+            $table->enum('status', ['diajukan', 'dipinjam', 'dikembalikan', 'telat', 'selesai'])->default('diajukan');
             $table->timestamps();
-        });
-    }
-
+    });
+}
     /**
      * Reverse the migrations.
      */

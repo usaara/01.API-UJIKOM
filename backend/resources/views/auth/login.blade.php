@@ -23,7 +23,7 @@
         <!-- Alert Error Validasi -->
         @if($errors->any())
             <div class="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
-                <ul class="list-disc pl-5">
+                <ul class="list-disc pl-5 mb-0">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach

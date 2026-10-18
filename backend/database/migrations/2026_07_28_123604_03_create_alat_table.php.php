@@ -19,8 +19,8 @@ return new class extends Migration
             $table->text('deskripsi')->nullable();
             $table->string('gambar')->nullable();
             $table->timestamps();
-        });
-    }
+    });
+}
 
     /**
      * Reverse the migrations.
